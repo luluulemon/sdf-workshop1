@@ -10,21 +10,28 @@ public class cart {
     
     public cart(){ ;}
 
-    public static void start(){
+    public static void start(String db){
         Console cons = System.console();
         String input;
         String cmd;
 
         List<String> shoppingCart = new LinkedList<>();
         boolean stop = false;
+        String user = null;
 
         while(!stop){
             
-            input = cons.readLine("Enter cmd item\n(add/del/list/end) > ");
+            input = cons.readLine("Enter cmd item\n(login/add/del/list/save/end) > ");
             String[] items = input.split(" ");
             cmd = input.split(" ")[0];
-
+            
             switch(cmd.toLowerCase()){
+                case "login":
+                    // look inside directory, find user file (all names to Lowercase)
+                    user = items[1].toLowerCase();
+                    shoppingCart = shoppingCartDB.loadDB(user, db);
+                    break;
+                
                 case "add":
                     for(int i=1; i<items.length; i++){
                         if (shoppingCart.contains(items[i].toLowerCase()) ) 
@@ -42,7 +49,7 @@ public class cart {
                     break;
                 case "del":
                     int delete_idx = Integer.parseInt(input.split(" ")[1]) ;
-                    if ( delete_idx > shoppingCart.size()) 
+                    if ( delete_idx > shoppingCart.size() || delete_idx < 1) 
                         System.out.println("Incorrect item index");
                     else{
                     System.out.printf("removed item %s from Cart\n", 
@@ -50,7 +57,17 @@ public class cart {
                         shoppingCart.remove(delete_idx - 1);    }
                     
                     break;
-                
+                case "save":
+                    if (user == null)
+                        System.out.println("Need to login 1st ser.");
+                    else 
+                        shoppingCartDB.saveDB(user, db, shoppingCart);
+                    break;              
+                case "users":
+                    shoppingCartDB.listUsers(db);
+
+                    break;
+
                 case "end":
                     stop = true;
                     break;
