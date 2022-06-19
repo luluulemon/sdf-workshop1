@@ -50,11 +50,11 @@ public class shoppingCartDB {
 
 
     public static void saveDB(String username, String db, List<String> shoppingCart){
-        //Path directory = Paths.get(db);
-        // boolean haveFile = false;
-
+        
         String fileName = db + "/" + username;
         Path userFile = Paths.get(fileName);
+
+        if (userFile.toFile().exists()){ userFile.toFile().delete(); }  // delete old file first;
 
         try {
         Files.createFile(userFile);
@@ -64,7 +64,7 @@ public class shoppingCartDB {
         
         }
     
-        
+
     public static void listUsers(String db){
         Path path = Paths.get(db);
         if (path.toFile().listFiles().length == 0)
